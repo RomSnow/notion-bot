@@ -12,7 +12,7 @@ abstract class FileCreator {
     public FileCreator(String name, String previousPath, FileType type) {
         this.name = name;
 
-        int tryId = new Random().nextInt();
+        int tryId = new Random().nextInt(Integer.MAX_VALUE);
         String tryFilePath = previousPath + File.separator + tryId;
 
         while (true) {

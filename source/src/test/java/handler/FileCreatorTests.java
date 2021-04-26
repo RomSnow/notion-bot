@@ -36,6 +36,13 @@ public class FileCreatorTests {
         Assert.assertEquals(room.getFilePath() + "/" + category.getId(), category.getFilePath());
     }
 
+    @Test
+    public void test(){
+        var room = Handler.registerRoom("MyRoom");
+        var category1 = room.addCategory("First");
+        var category2 = room.addCategory("Second");
+    }
+
     @AfterClass
     public static void clear() {
         Handler.clearAllInRoot();

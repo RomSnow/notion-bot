@@ -1,5 +1,6 @@
 package handler;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 public class Room extends FileCreator {
@@ -28,5 +29,9 @@ public class Room extends FileCreator {
             throw new InvalidIdException(id);
         else
             categories.remove(id);
+    }
+
+    public Collection<Category> getAllCategories(){
+        return categories.values();
     }
 }

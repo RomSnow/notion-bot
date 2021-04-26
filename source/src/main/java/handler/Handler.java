@@ -1,6 +1,8 @@
 package handler;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class Handler {
@@ -33,6 +35,10 @@ public class Handler {
         var rootFile = new File(rootPath);
 
         deleteDirectory(rootFile);
+    }
+
+    public static Collection<Room> getAllRooms(){
+        return rooms.values();
     }
 
     private static boolean deleteDirectory(File directoryToBeDeleted) {
