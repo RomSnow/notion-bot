@@ -1,9 +1,9 @@
 package handler;
 
 public class InvalidIdException extends Exception{
-    private final int id;
+    private final String id;
 
-    public InvalidIdException(int id){
+    public InvalidIdException(String id){
         this.id = id;
     }
 

@@ -5,6 +5,11 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+
 public class FileCreatorTests {
     @BeforeClass
     public static void setRoot() {
@@ -41,6 +46,29 @@ public class FileCreatorTests {
         var room = Handler.registerRoom("MyRoom");
         var category1 = room.addCategory("First");
         var category2 = room.addCategory("Second");
+    }
+
+    @Test
+    public void testWriteFileInCategory() throws IOException {
+        var room = Handler.registerRoom("Main");
+        var category = room.addCategory("Second");
+
+        var fileToAdd = createFile("Hello! This is test file...", "testFile");
+        var fileMsg = category.addFile(fileToAdd);
+
+        var newFile = fileMsg.getFile();
+        var scanner = new Scanner(newFile);
+
+        var text = scanner.nextLine();
+        Assert.assertEquals(text, "Hello! This is test file...");
+    }
+
+    private File createFile(String fileSource, String fileName) throws IOException {
+        var file = new File(fileName);
+        var writer = new FileWriter(file);
+        writer.write(fileSource);
+        writer.close();
+        return file;
     }
 
     @AfterClass

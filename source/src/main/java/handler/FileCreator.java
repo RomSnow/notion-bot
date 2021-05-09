@@ -2,17 +2,17 @@ package handler;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
+import java.util.UUID;
 
 abstract class FileCreator {
+    private final String id;
     private final String name;
-    private final int id;
     private final String filePath;
 
     public FileCreator(String name, String previousPath, FileType type) {
         this.name = name;
 
-        int tryId = new Random().nextInt(Integer.MAX_VALUE);
+        String tryId = UUID.randomUUID().toString();
         String tryFilePath = previousPath + File.separator + tryId;
 
         while (true) {
@@ -21,7 +21,7 @@ abstract class FileCreator {
                 break;
             } catch (IOException e) {
                 e.printStackTrace();
-                tryId = new Random().nextInt();
+                tryId = UUID.randomUUID().toString();
                 tryFilePath = previousPath + File.separator + tryId;
             }
         }
@@ -34,7 +34,7 @@ abstract class FileCreator {
         return name;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -44,10 +44,7 @@ abstract class FileCreator {
 
     private void createFile(String filePath, FileType type) throws IOException {
         var file = new File(filePath);
-        if (type == FileType.File) {
-            if (!file.createNewFile())
-                throw new IOException();
-        } else {
+        if (type == FileType.Directory) {
             if (!file.mkdir())
                 throw new IOException();
         }

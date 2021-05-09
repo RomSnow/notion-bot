@@ -2,18 +2,17 @@ package handler;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 
 public class Handler {
-    private static HashMap<Integer, Room> rooms = new HashMap<>();
+    private static HashMap<String, Room> rooms = new HashMap<>();
     private static String rootPath = "src/main/resources/Rooms";
 
     public static void setRoot(String root) {
         rootPath = root;
     }
 
-    public static Room logInRoom(int id) throws InvalidIdException {
+    public static Room logInRoom(String id) throws InvalidIdException {
         if (rooms.containsKey(id))
             return rooms.get(id);
         else
@@ -37,8 +36,8 @@ public class Handler {
         deleteDirectory(rootFile);
     }
 
-    public static Collection<Room> getAllRooms(){
-        return rooms.values();
+    public static ArrayList<Room> getAllRooms(){
+        return new ArrayList<>(rooms.values());
     }
 
     private static boolean deleteDirectory(File directoryToBeDeleted) {

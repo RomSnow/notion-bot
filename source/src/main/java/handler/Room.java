@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class Room extends FileCreator {
-    private final HashMap<Integer ,Category> categories;
+    private final HashMap<String ,Category> categories;
 
     public Room(String name, String prePath) {
         super(name, prePath, FileType.Directory);
@@ -17,14 +17,14 @@ public class Room extends FileCreator {
         return category;
     }
 
-    public Category getCategory(int id) throws InvalidIdException {
+    public Category getCategory(String id) throws InvalidIdException {
         if (!categories.containsKey(id))
             throw new InvalidIdException(id);
         else
             return categories.get(id);
     }
 
-    public void removeCategory(int id) throws InvalidIdException {
+    public void removeCategory(String id) throws InvalidIdException {
         if (!categories.containsKey(id))
             throw new InvalidIdException(id);
         else
