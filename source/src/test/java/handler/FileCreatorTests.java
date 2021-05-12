@@ -42,7 +42,7 @@ public class FileCreatorTests {
     }
 
     @Test
-    public void test(){
+    public void test() {
         var room = Handler.registerRoom("MyRoom");
         var category1 = room.addCategory("First");
         var category2 = room.addCategory("Second");

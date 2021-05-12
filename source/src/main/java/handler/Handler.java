@@ -12,11 +12,38 @@ public class Handler {
         rootPath = root;
     }
 
+    public static void restoreRooms() {
+        var rootFile = new File(rootPath);
+        var filePaths = rootFile.listFiles();
+
+        if (filePaths != null) {
+            for (var file : filePaths) {
+
+                if (rooms.containsKey(file.getName()))
+                    continue;
+
+                Room room;
+                try {
+                    room = Room.restoreRoom(file.getName(), rootPath);
+                } catch (InvalidIdException e) {
+                    continue;
+                }
+                rooms.put(room.getId(), room);
+            }
+        }
+    }
+
     public static Room logInRoom(String id) throws InvalidIdException {
         if (rooms.containsKey(id))
             return rooms.get(id);
-        else
-            throw new InvalidIdException(id);
+        else {
+            restoreRooms();
+
+            if (rooms.containsKey(id))
+                return rooms.get(id);
+            else
+                throw new InvalidIdException(id);
+        }
     }
 
     public static Room registerRoom(String name){
