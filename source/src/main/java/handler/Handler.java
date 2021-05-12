@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class Handler {
     private static HashMap<String, Room> rooms = new HashMap<>();
-    private static String rootPath = "src/main/resources/Rooms";
+    private static String rootPath = "source/src/main/resources/Rooms";
 
     public static void setRoot(String root) {
         rootPath = root;

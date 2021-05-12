@@ -1,28 +1,68 @@
 package tg.bot;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.facilities.filedownloader.TelegramFileDownloader;
+import org.telegram.telegrambots.meta.api.methods.GetFile;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.File;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import tg.state.State;
+
+import java.util.HashMap;
 
 import static config.Config.getConfig;
 
 public class TelegramBot extends TelegramLongPollingBot {
     private final String username;
     private final String token;
+    private final HashMap<Long, State> chatIdToState;
 
     public TelegramBot() {
         token = getConfig().get("tg.token");
         username = getConfig().get("tg.username");
+        chatIdToState = new HashMap<>();
     }
 
     @Override
     public void onUpdateReceived(Update update) {
         var message = update.getMessage();
         var chatId = message.getChatId();
-        var text = message.getText();
+        if (!chatIdToState.containsKey(chatId)) {
+            chatIdToState.put(chatId, new State());
+        }
+        handleMessage(message, chatIdToState.get(chatId));
+    }
 
-        sendMessageByChatId(chatId.toString(), text);
+    private void handleMessage(Message msg, State state) {
+        Response response = null;
+        var chatId = msg.getChatId();
+        var text = msg.getText();
+        var fd = new TelegramFileDownloader(new BotToken(getBotToken()));
+        var doc = msg.getDocument();
+        if (doc != null) {
+            var gf = new GetFile(doc.getFileId());
+            try {
+                var filePath = execute(gf).getFilePath();
+                var tgFile = new File(doc.getFileId(), doc.getFileUniqueId(), doc.getFileSize(), filePath);
+                var file = fd.downloadFile(tgFile);
+                response = state.transition(text, file, doc.getFileName());
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        } else {
+            response = state.transition(text, null, "");
+        }
+
+        if (response == null)
+            return;
+        if (response.getFile() == null)
+            sendMessageByChatId(chatId.toString(), response.getText());
+        else
+            sendDocByChatId(chatId.toString(), response);
     }
 
     private void sendMessageByChatId(String chatId, String message) {
@@ -30,6 +70,17 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         try {
             execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendDocByChatId(String chatId, Response response) {
+        var inputFile = new InputFile(response.getFile());
+        var sendDoc = new SendDocument(chatId, inputFile);
+
+        try {
+            execute(sendDoc);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

@@ -2,3 +2,4 @@ source/config/*
 .idea/*
 *.iml
 source/target/*
+source/src/main/resources/*
