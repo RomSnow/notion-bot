@@ -8,6 +8,7 @@ import org.javatuples.Pair;
 import tg.bot.Response;
 import util.Util;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -49,27 +50,9 @@ public class State {
                     return new Response(Answer.SendFile, null);
             }
         } else if (condition.equals(Condition.FILES_GET)) {
-            try {
-                var msgFile = selectedCategory.getFile(namesToId.get(word));
-                condition = Condition.FILES;
-                return new Response(Answer.GetFileSuccess, msgFile.getFile());
-            } catch (InvalidIdException e) {
-                return new Response(Answer.GetFileNotFound, null);
-            }
+            return handleFileGet(word);
         } else if (condition.equals(Condition.FILES_SEND)) {
-            if (file != null) {
-                try {
-                    var msgFile = selectedCategory.addFile(file);
-                    idToNames.put(msgFile.getId(), fileName);
-                    namesToId.put(fileName, msgFile.getId());
-                    condition = Condition.FILES;
-                    return new Response(Answer.SendFileSuccess, null);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return new Response(Answer.SendFileError, null);
-                }
-            }
-            return new Response(Answer.SendFileNot, null);
+            return handleFileSend(file, fileName);
         }
         return new Response(Answer.Idk, null);
     }
@@ -79,5 +62,31 @@ public class State {
             selectedRoom = Handler.registerRoom("main");
         if (selectedCategory == null)
             selectedCategory = selectedRoom.addCategory("main");
+    }
+
+    private Response handleFileGet(String word) {
+        try {
+            var msgFile = selectedCategory.getFile(namesToId.get(word));
+            condition = Condition.FILES;
+            return new Response(Answer.GetFileSuccess, msgFile.getFile());
+        } catch (InvalidIdException e) {
+            return new Response(Answer.GetFileNotFound, null);
+        }
+    }
+
+    private Response handleFileSend(File file, String fileName) {
+        if (file != null) {
+            try {
+                var msgFile = selectedCategory.addFile(file);
+                idToNames.put(msgFile.getId(), fileName);
+                namesToId.put(fileName, msgFile.getId());
+                condition = Condition.FILES;
+                return new Response(Answer.SendFileSuccess, null);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return new Response(Answer.SendFileError, null);
+            }
+        }
+        return new Response(Answer.SendFileNot, null);
     }
 }
