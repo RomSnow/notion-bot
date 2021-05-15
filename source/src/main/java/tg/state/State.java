@@ -17,10 +17,12 @@ public class State {
     private final HashMap<Pair<Condition, String>, Pair<Condition, String>> transition;
     private final HashMap<String, String> namesToId;
     private final HashMap<String, String> idToNames;
+    private Handler handler;
     private Room selectedRoom;
     private Category selectedCategory;
 
     public State() {
+        handler = new Handler("src/test/resources/Rooms");
         transition = new Transition().getTransitions();
         condition = Condition.BEGIN;
         idToNames = new HashMap<>();
@@ -59,14 +61,14 @@ public class State {
 
     private void mockRoomAndCat() {
         if (selectedRoom == null)
-            selectedRoom = Handler.registerRoom("main");
+            selectedRoom = handler.registerRoom("main");
         if (selectedCategory == null)
             selectedCategory = selectedRoom.addCategory("main");
     }
 
     private Response handleFileGet(String word) {
         try {
-            var msgFile = selectedCategory.getFile(namesToId.get(word));
+            var msgFile = selectedCategory.getFileById(namesToId.get(word));
             condition = Condition.FILES;
             return new Response(Answer.GetFileSuccess, msgFile.getFile());
         } catch (InvalidIdException e) {
