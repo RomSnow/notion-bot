@@ -9,6 +9,12 @@ abstract class FileCreator {
     private final String name;
     private final String filePath;
 
+    public FileCreator(String name, String previousPath, String id) {
+        this.name = name;
+        this.filePath = previousPath + File.separator + id;
+        this.id = id;
+    }
+
     public FileCreator(String name, String previousPath, FileType type) {
         this.name = name;
 
