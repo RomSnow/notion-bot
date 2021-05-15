@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.sql.SQLException;
+import handler.InvalidIdException;
 
 public class DatabaseTests {
     @Test
@@ -15,7 +16,7 @@ public class DatabaseTests {
     }
 
     @Test
-    public void testDBFileNames() {
+    public void testDBFileNames() throws InvalidIdException {
         var namesDb = new DBFileNames();
 
         namesDb.addFileRecord("test_id", "test_name", "test_admin");

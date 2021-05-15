@@ -1,5 +1,7 @@
 package handler;
 
+import db_storage.DBFileNames;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,7 +28,7 @@ public class Room extends FileCreator {
                 );
         }
 
-        return new Room("category", id, prePath, listCategories);
+        return new Room(id, prePath, listCategories);
     }
 
     public Room(String name, String prePath) {
@@ -34,8 +36,8 @@ public class Room extends FileCreator {
         categories = new HashMap<>();
     }
 
-    public Room(String name, String id, String prePath, ArrayList<Category> categoryList) {
-        super(name, prePath, id);
+    public Room(String id, String prePath, ArrayList<Category> categoryList) {
+        super(prePath, id);
         categories = new HashMap<>();
 
         for (var category : categoryList)
@@ -48,11 +50,16 @@ public class Room extends FileCreator {
         return category;
     }
 
-    public Category getCategory(String id) throws InvalidIdException {
+    public Category getCategoryById(String id) throws InvalidIdException {
         if (!categories.containsKey(id))
             throw new InvalidIdException(id);
         else
             return categories.get(id);
+    }
+
+    public Category getCategoryByName(String name) throws InvalidIdException {
+        var id = dbFileNames.getIdByName(name);
+        return getCategoryById(id);
     }
 
     public void removeCategory(String id) throws InvalidIdException {
@@ -60,7 +67,7 @@ public class Room extends FileCreator {
             throw new InvalidIdException(id);
         else {
             var categoryPath = categories.get(id).getFilePath();
-            deleteDirectory(new File(categoryPath));
+            deleteDirectory(new File(categoryPath), dbFileNames);
         }
     }
 
@@ -68,11 +75,16 @@ public class Room extends FileCreator {
         return categories.values();
     }
 
-    private static void deleteDirectory(File directoryToBeDeleted) {
+    private static void deleteDirectory(File directoryToBeDeleted, DBFileNames db) {
         File[] allContents = directoryToBeDeleted.listFiles();
         if (allContents != null) {
             for (File file : allContents) {
-                deleteDirectory(file);
+                deleteDirectory(file, db);
+                try {
+                    db.removeFileRecordById(file.getName());
+                } catch (InvalidIdException e) {
+                    continue;
+                }
             }
         }
         directoryToBeDeleted.delete();

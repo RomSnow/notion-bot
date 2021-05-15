@@ -26,7 +26,7 @@ public class Category extends FileCreator {
                 );
         }
 
-        return new Category("category", id, prePath, listMsg);
+        return new Category(id, prePath, listMsg);
     }
 
     public Category(String name, String prePath) {
@@ -34,8 +34,8 @@ public class Category extends FileCreator {
         files = new HashMap<>();
     }
 
-    public Category(String name, String id, String prePath, ArrayList<MessageFile> msgFiles) {
-        super(name, prePath, id);
+    public Category(String id, String prePath, ArrayList<MessageFile> msgFiles) {
+        super(prePath, id);
         files = new HashMap<>();
 
         for (var msg : msgFiles)
@@ -49,11 +49,16 @@ public class Category extends FileCreator {
         return msgFile;
     }
 
-    public MessageFile getFile(String fileId) throws InvalidIdException {
+    public MessageFile getFileById(String fileId) throws InvalidIdException {
         if (!files.containsKey(fileId))
             throw new InvalidIdException(fileId);
         else
             return files.get(fileId);
+    }
+
+    public MessageFile getFileByName(String name) throws InvalidIdException {
+        var id = dbFileNames.getIdByName(name);
+        return getFileById(name);
     }
 
     public ArrayList<MessageFile> getAllFiles() {
