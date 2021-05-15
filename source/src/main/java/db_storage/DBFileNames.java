@@ -6,40 +6,42 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DBFileNames {
-    public static boolean addFileRecord(String fileId, String fileName, String adminName) {
-        Connection connection = null;
-        Statement statement = null;
+    private final String TABLE_NAME = "names";
 
+    public void addFileRecord(String fileId, String fileName, String adminName) {
         var sql = String.format(
-                "INSERT INTO names (name, file_id, admin) VALUES ('%s', '%s', '%s')",
-                fileName, fileId, adminName);
-        try {
-            connection = DBConnector.createConnection();
-            statement = connection.createStatement();
+                "INSERT INTO %s (name, file_id, admin) VALUES ('%s', '%s', '%s')",
+                TABLE_NAME, fileName, fileId, adminName);
 
-            statement.executeUpdate(sql);
-            return true;
-        } catch (SQLException e) {
-            return false;
-        } finally {
-            if (connection != null && statement != null) {
-                try {
-                    connection.close();
-                    statement.close();
-                } catch (SQLException ignored) {
-                }
-            }
-        }
+        updateBySQL(sql);
     }
 
-    public static String getFileName(String id) {
+    public String getNameById(String id) {
+        var sql = String.format(
+                "SELECT name FROM %s WHERE file_id = '%s'", TABLE_NAME, id
+        );
+        return getBySQL(sql, "name");
+    }
+
+    public String getIdByName(String name) {
+        var sql = String.format(
+                "SELECT file_id FROM %s WHERE name = '%s'", TABLE_NAME, name
+        );
+        return getBySQL(sql, "file_id");
+    }
+
+    public void removeFileRecordById(String fileId){
+        var sql = String.format(
+                "DELETE FROM %s WHERE file_id = '%s'", TABLE_NAME, fileId
+        );
+
+        updateBySQL(sql);
+    }
+
+    private String getBySQL(String sql, String dataToGet) {
         Connection connection = null;
         Statement statement = null;
         ResultSet reply;
-
-        var sql = String.format(
-                "SELECT name FROM names WHERE file_id = '%s'", id
-        );
 
         try {
             connection = DBConnector.createConnection();
@@ -49,7 +51,7 @@ public class DBFileNames {
             if (!reply.next())
                 throw new SQLException();
 
-            return reply.getString("name");
+            return reply.getString(dataToGet);
 
         } catch (SQLException e) {
             return "";
@@ -62,7 +64,25 @@ public class DBFileNames {
         }
     }
 
-    public static boolean removeFileRecord(String fileId){
-        return true;
+    private void updateBySQL(String sql) {
+        Connection connection = null;
+        Statement statement = null;
+
+        try {
+            connection = DBConnector.createConnection();
+            statement = connection.createStatement();
+
+            statement.executeUpdate(sql);
+        } catch (SQLException ignored) {
+        } finally {
+            if (connection != null && statement != null) {
+                try {
+                    connection.close();
+                    statement.close();
+                } catch (SQLException ignored) {
+                }
+            }
+        }
+
     }
 }
