@@ -6,7 +6,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class MessageFile extends FileCreator{
+public class MessageFile extends FileCreator {
+    public static MessageFile restoreMessageFile(String id, String prePath) throws InvalidIdException {
+        if (!new File(prePath + id).isFile())
+            throw new InvalidIdException(id);
+        return new MessageFile(prePath, id);
+    }
+
+    public MessageFile(String previousPath, String id) {
+        super(previousPath, id);
+    }
+
     public MessageFile(String name, String previousPath, FileType type) {
         super(name, previousPath, type);
     }

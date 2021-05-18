@@ -1,13 +1,27 @@
 package handler;
 
+import db_storage.DBFileNames;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
 abstract class FileCreator {
     private final String id;
-    private final String name;
+    private String name;
     private final String filePath;
+    protected final DBFileNames dbFileNames;
+
+    public FileCreator(String previousPath, String id) {
+        dbFileNames = new DBFileNames();
+        try {
+            name = dbFileNames.getNameById(id);
+        } catch (InvalidIdException e) {
+            name = "";
+        }
+        this.filePath = previousPath + File.separator + id;
+        this.id = id;
+    }
 
     public FileCreator(String name, String previousPath, FileType type) {
         this.name = name;
@@ -28,6 +42,8 @@ abstract class FileCreator {
 
         id = tryId;
         filePath = tryFilePath;
+        dbFileNames = new DBFileNames();
+        dbFileNames.addFileRecord(id, name, "");
     }
 
     public String getName() {

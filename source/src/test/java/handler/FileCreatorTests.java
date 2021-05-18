@@ -8,17 +8,21 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class FileCreatorTests {
+    private static Handler handler;
+
     @BeforeClass
     public static void setRoot() {
-        Handler.setRoot("src/test/resources/Rooms");
+        handler = new Handler("src/test/resources/Rooms");
+        handler.setRoot("src/test/resources/Rooms");
     }
 
     @Test
     public void testRegisterRoom() {
-        var room = Handler.registerRoom("TestRoom");
+        var room = handler.registerRoom("TestRoom");
         Assert.assertEquals(room.getName(), "TestRoom");
 
         var id = room.getId();
@@ -26,31 +30,48 @@ public class FileCreatorTests {
     }
 
     @Test
+    public void testRestore() {
+        var restoreHandler = new Handler("src/test/resources/Rooms");
+        var oldRooms = handler.getAllRooms();
+        var restoredRooms = restoreHandler.getAllRooms();
+
+        var oldSet = new HashSet<String>();
+        var resSet = new HashSet<String>();
+        for (var old : oldRooms)
+            oldSet.add(old.getId());
+
+        for (var res : restoredRooms)
+            resSet.add(res.getId());
+
+        Assert.assertEquals(oldSet, resSet);
+    }
+
+    @Test
     public void testRegisterAndLogRoom() throws InvalidIdException {
-        var firstRoom = Handler.registerRoom("First");
-        var getFirstRoom = Handler.logInRoom(firstRoom.getId());
+        var firstRoom = handler.registerRoom("First");
+        var getFirstRoom = handler.logInRoomById(firstRoom.getId());
 
         Assert.assertEquals(firstRoom.getName(), getFirstRoom.getName());
     }
 
     @Test
     public void testAddCategory() {
-        var room = Handler.registerRoom("A");
+        var room = handler.registerRoom("A");
         var category = room.addCategory("A1");
 
         Assert.assertEquals(room.getFilePath() + "/" + category.getId(), category.getFilePath());
     }
 
     @Test
-    public void test(){
-        var room = Handler.registerRoom("MyRoom");
+    public void test() {
+        var room = handler.registerRoom("MyRoom");
         var category1 = room.addCategory("First");
         var category2 = room.addCategory("Second");
     }
 
     @Test
     public void testWriteFileInCategory() throws IOException {
-        var room = Handler.registerRoom("Main");
+        var room = handler.registerRoom("Main");
         var category = room.addCategory("Second");
 
         var fileToAdd = createFile("Hello! This is test file...", "testFile");
@@ -73,7 +94,7 @@ public class FileCreatorTests {
 
     @AfterClass
     public static void clear() {
-        Handler.clearAllInRoot();
+        handler.clearAllInRoot();
     }
 
 }
