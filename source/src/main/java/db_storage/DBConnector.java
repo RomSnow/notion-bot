@@ -11,7 +11,7 @@ public class DBConnector {
     private static String URL;
     private static String USER;
     private static String PWD;
-    private static final String confFilePath = "conf/db_data.conf";
+    private static final String confFilePath = "source/conf/db_data.conf";
 
     private static void readConf() {
         var prop = new Properties();

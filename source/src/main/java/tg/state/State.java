@@ -16,16 +16,14 @@ public class State {
     private Condition condition;
     private final HashMap<Pair<Condition, String>, Pair<Condition, String>> transition;
     private final HashMap<String, String> namesToId;
-    private final HashMap<String, String> idToNames;
     private Handler handler;
     private Room selectedRoom;
     private Category selectedCategory;
 
     public State() {
-        handler = new Handler("src/test/resources/Rooms");
+        handler = new Handler("source/src/main/resources/Rooms");
         transition = new Transition().getTransitions();
         condition = Condition.BEGIN;
-        idToNames = new HashMap<>();
         namesToId = new HashMap<>();
     }
 
@@ -40,7 +38,7 @@ public class State {
             }
         }
         if (condition.equals(Condition.FILES)) {
-            var allFiles = Util.GetNamesOfFiles(selectedCategory.getAllFiles(), idToNames);
+            var allFiles = Util.GetNamesOfFiles(selectedCategory.getAllFiles());
             switch (word) {
                 case Alphabet.FILES_ALL:
                     return new Response(Answer.AnswerToAllFiles(allFiles), null);
@@ -60,15 +58,25 @@ public class State {
     }
 
     private void mockRoomAndCat() {
-        if (selectedRoom == null)
-            selectedRoom = handler.registerRoom("main");
-        if (selectedCategory == null)
-            selectedCategory = selectedRoom.addCategory("main");
+        if (selectedRoom == null) {
+            try {
+                selectedRoom = handler.logInRoomByName("main228");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (selectedCategory == null) {
+            try {
+                selectedCategory = selectedRoom.getCategoryByName("mainCats228");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private Response handleFileGet(String word) {
         try {
-            var msgFile = selectedCategory.getFileById(namesToId.get(word));
+            var msgFile = selectedCategory.getFileByName(word);
             condition = Condition.FILES;
             return new Response(Answer.GetFileSuccess, msgFile.getFile());
         } catch (InvalidIdException e) {
@@ -79,9 +87,7 @@ public class State {
     private Response handleFileSend(File file, String fileName) {
         if (file != null) {
             try {
-                var msgFile = selectedCategory.addFile(file);
-                idToNames.put(msgFile.getId(), fileName);
-                namesToId.put(fileName, msgFile.getId());
+                selectedCategory.addFile(file, fileName);
                 condition = Condition.FILES;
                 return new Response(Answer.SendFileSuccess, null);
             } catch (IOException e) {

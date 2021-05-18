@@ -8,7 +8,8 @@ import java.nio.file.Paths;
 
 public class MessageFile extends FileCreator {
     public static MessageFile restoreMessageFile(String id, String prePath) throws InvalidIdException {
-        if (!new File(prePath + id).isFile())
+        var file = new File(prePath + "/" + id);
+        if (!file.isFile())
             throw new InvalidIdException(id);
         return new MessageFile(prePath, id);
     }
