@@ -22,10 +22,13 @@ public class Room extends FileCreator {
         var filePaths = roomFile.listFiles();
 
         if (filePaths != null) {
-            for (var file : filePaths)
+            for (var file : filePaths) {
+                var fileName = file.getName();
+                var fileParent = file.getParent();
                 listCategories.add(
                         Category.restoreCategory(file.getName(), file.getParent())
                 );
+            }
         }
 
         return new Room(id, prePath, listCategories);

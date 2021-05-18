@@ -30,7 +30,7 @@ public class Handler {
         if (filePaths != null) {
             for (var file : filePaths) {
 
-                if (rooms.containsKey(file.getName()))
+                 if (rooms.containsKey(file.getName()))
                     continue;
 
                 Room room;
@@ -58,7 +58,7 @@ public class Handler {
     }
 
     public Room logInRoomByName(String name) throws InvalidIdException {
-        var id = dbFileNames.getNameById(name);
+        var id = dbFileNames.getIdByName(name);
         return logInRoomById(id);
     }
 

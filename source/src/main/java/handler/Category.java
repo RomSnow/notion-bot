@@ -10,7 +10,7 @@ public class Category extends FileCreator {
 
     public static Category restoreCategory(String id, String prePath) throws InvalidIdException {
         var categoryPath = prePath + File.separator + id;
-        var listMsg = new ArrayList<MessageFile>();
+         var listMsg = new ArrayList<MessageFile>();
 
         var categoryFile = new File(categoryPath);
 
@@ -49,6 +49,13 @@ public class Category extends FileCreator {
         return msgFile;
     }
 
+    public MessageFile addFile(File file, String fileName) throws IOException {
+        var msgFile = new MessageFile(fileName, getFilePath(), FileType.File);
+        files.put(msgFile.getId(), msgFile);
+        msgFile.writeFile(file);
+        return msgFile;
+    }
+
     public MessageFile getFileById(String fileId) throws InvalidIdException {
         if (!files.containsKey(fileId))
             throw new InvalidIdException(fileId);
@@ -58,7 +65,7 @@ public class Category extends FileCreator {
 
     public MessageFile getFileByName(String name) throws InvalidIdException {
         var id = dbFileNames.getIdByName(name);
-        return getFileById(name);
+        return getFileById(id);
     }
 
     public ArrayList<MessageFile> getAllFiles() {

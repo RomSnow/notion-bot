@@ -10,9 +10,9 @@ public class Util {
         return in != null && in.length() > 0 && in.charAt(0) == symbol;
     }
 
-    public static String GetNamesOfFiles(ArrayList<MessageFile> files, HashMap<String, String> fileNames) {
+    public static String GetNamesOfFiles(ArrayList<MessageFile> files) {
         var result = new StringBuilder();
-        files.forEach(f -> result.append(fileNames.get(f.getId())).append(", "));
+        files.forEach(f -> result.append(f.getName()).append(", "));
         if (result.length() < 3)
             return result.toString();
         return result.substring(0, result.length() - 2);
