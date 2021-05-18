@@ -16,8 +16,8 @@ public class FileCreatorTests {
 
     @BeforeClass
     public static void setRoot() {
-        handler = new Handler("src/test/resources/Rooms");
-        handler.setRoot("src/test/resources/Rooms");
+        handler = new Handler("src/test/Rooms");
+        handler.setRoot("src/test/Rooms");
     }
 
     @Test
@@ -26,25 +26,9 @@ public class FileCreatorTests {
         Assert.assertEquals(room.getName(), "TestRoom");
 
         var id = room.getId();
-        Assert.assertEquals("src/test/resources/Rooms/%s".formatted(id), room.getFilePath());
+        Assert.assertEquals("src/test/Rooms/%s".formatted(id), room.getFilePath());
     }
 
-    @Test
-    public void testRestore() {
-        var restoreHandler = new Handler("src/test/resources/Rooms");
-        var oldRooms = handler.getAllRooms();
-        var restoredRooms = restoreHandler.getAllRooms();
-
-        var oldSet = new HashSet<String>();
-        var resSet = new HashSet<String>();
-        for (var old : oldRooms)
-            oldSet.add(old.getId());
-
-        for (var res : restoredRooms)
-            resSet.add(res.getId());
-
-        Assert.assertEquals(oldSet, resSet);
-    }
 
     @Test
     public void testRegisterAndLogRoom() throws InvalidIdException {
@@ -90,6 +74,23 @@ public class FileCreatorTests {
         writer.write(fileSource);
         writer.close();
         return file;
+    }
+
+    @Test
+    public void testRestore() {
+        var restoreHandler = new Handler("src/test/Rooms");
+        var oldRooms = handler.getAllRooms();
+        var restoredRooms = restoreHandler.getAllRooms();
+
+        var oldSet = new HashSet<String>();
+        var resSet = new HashSet<String>();
+        for (var old : oldRooms)
+            oldSet.add(old.getId());
+
+        for (var res : restoredRooms)
+            resSet.add(res.getId());
+
+        Assert.assertEquals(oldSet, resSet);
     }
 
     @AfterClass
