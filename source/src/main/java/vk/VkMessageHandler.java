@@ -4,11 +4,12 @@ import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.GroupActor;
 import com.vk.api.sdk.objects.messages.*;
 import handler.Handler;
+import tg.state.State;
 
 import java.util.Random;
 
 public class VkMessageHandler {
-    protected final Handler handler = new Handler("src/main/resources");
+    protected final Handler handler = new Handler("source/src/main/resources/Rooms");
     protected final Random random = new Random();
     protected final GroupActor actor = new GroupActor(
             203495247,

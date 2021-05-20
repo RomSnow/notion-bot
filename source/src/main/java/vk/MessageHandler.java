@@ -8,7 +8,7 @@ public class MessageHandler {
     protected boolean newRoom;
     protected boolean newCategory;
     protected boolean newFile;
-    protected final Handler handler = new Handler("src/main/resources");
+    protected final Handler handler = new Handler("source/src/main/resources/Rooms");
     protected Room currentRoom;
     protected Category currentCategory;
 

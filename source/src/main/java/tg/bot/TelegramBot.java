@@ -1,5 +1,6 @@
 package tg.bot;
 
+import org.apache.commons.io.FileUtils;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.facilities.filedownloader.TelegramFileDownloader;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
@@ -12,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import tg.state.State;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import static config.Config.getConfig;
@@ -76,7 +78,13 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void sendDocByChatId(String chatId, Response response) {
-        var inputFile = new InputFile(response.getFile());
+        var fileToSend = new java.io.File("source/src/main/resources/tmp/" + response.getFile().getName());
+        try {
+            FileUtils.copyFile(response.getFile().getFile(), fileToSend);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        var inputFile = new InputFile(fileToSend);
         var sendDoc = new SendDocument(chatId, inputFile);
 
         try {

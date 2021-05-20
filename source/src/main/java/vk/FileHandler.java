@@ -40,7 +40,7 @@ public class FileHandler extends VkMessageHandler{
                     else{
                         for (var file: message.getAttachments()){
                             var name = file.getDoc().getTitle();
-                            File fileToSave = new File("src/main/resources/" + name);
+                            File fileToSave = new File("source/src/main/resources/" + name);
                             var url = file.getDoc().getUrl();
                             FileUtils.copyURLToFile(url, fileToSave);
                             messageHandler.currentCategory.addFile(fileToSave);
@@ -53,12 +53,12 @@ public class FileHandler extends VkMessageHandler{
                 else {
                     for (var file : messageHandler.currentCategory.getAllFiles()) {
                         if (file.getName().equals(text)) {
-                            FileUtils.copyFile(file.getFile(), new File("src/main/resources/" + file.getName()));
+                            FileUtils.copyFile(file.getFile(), new File("source/src/main/resources/" + file.getName()));
                             var userId = message.getFromId();
                             var peerId = message.getPeerId();
                             var server = vk.docs().getMessagesUploadServer(actor).peerId(peerId).execute();
                             var response = vk.upload().doc(server.getUploadUrl().toString(),
-                                    new File("src/main/resources/" + file.getName())).execute();
+                                    new File("source/src/main/resources/" + file.getName())).execute();
                             var docs = vk.docs().save(actor, response.getFile()).execute();
                             var doc = docs.getDoc();
                             vk.messages().send(actor).message("asked file").attachment("doc" + doc.getOwnerId() + "_" + doc.getId()).
