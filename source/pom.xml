@@ -14,20 +14,23 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.24</version>
+            <groupId>com.vk.api</groupId>
+            <artifactId>sdk</artifactId>
+            <version>1.0.6</version>
         </dependency>
-        <dependency>
-            <groupId>org.telegram</groupId>
-            <artifactId>telegrambots</artifactId>
-            <version>5.2.0</version>
-        </dependency>
+
         <dependency>
             <groupId>org.javatuples</groupId>
             <artifactId>javatuples</artifactId>
             <version>1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots</artifactId>
+            <version>5.2.0</version>
         </dependency>
     </dependencies>
 
