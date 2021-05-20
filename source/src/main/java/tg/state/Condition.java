@@ -12,6 +12,11 @@ public enum Condition {
     BEGIN,
     HALL,
     ROOMS,
+    ROOMS_CHOOSE,
+    ROOMS_CREATE,
+    CATS,
+    CATS_CHOOSE,
+    CATS_CREATE,
     FILES,
     FILES_GET,
     FILES_SEND
