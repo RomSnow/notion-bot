@@ -16,12 +16,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import static config.Config.getConfig;
+
 
 public class Vk {
     private static final TransportClient transportClient = new HttpTransportClient();
     private static final VkApiClient vk = new VkApiClient(transportClient);
-    private static final GroupActor actor = new GroupActor(203495247,
-            "5ca5afd12f9cf480d275deb1ded1e4cf3aa3d5daee2a8bad5f776da79f8cc6670bcecdb4c9e068321012c");
+    private static final GroupActor actor = new GroupActor(getConfig().getInteger("vk.id"),
+            getConfig().getString("vk.token"));
     private static final HashMap<Integer, State> users = new HashMap<>();
 
     public static synchronized void startBot() {

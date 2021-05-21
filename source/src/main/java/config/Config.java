@@ -43,7 +43,16 @@ public class Config {
         }
     }
 
-    public String get(String configSetting) {
+    public String getString(String configSetting) {
         return prop.getProperty(configSetting);
+    }
+
+    public Integer getInteger(String configSetting) {
+        var property = prop.getProperty(configSetting);
+        try {
+            return Integer.parseInt(property);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 }

@@ -10,8 +10,8 @@ public class DBConnector {
 
     public static Connection createConnection() throws SQLException {
         return DriverManager.getConnection(
-                getConfig().get("db.url"),
-                getConfig().get("db.user"),
-                getConfig().get("db.password"));
+                getConfig().getString("db.url"),
+                getConfig().getString("db.user"),
+                getConfig().getString("db.password"));
     }
 }

@@ -26,8 +26,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final HashMap<Long, State> chatIdToState;
 
     public TelegramBot() {
-        token = getConfig().get("tg.token");
-        username = getConfig().get("tg.username");
+        token = getConfig().getString("tg.token");
+        username = getConfig().getString("tg.username");
         chatIdToState = new HashMap<>();
     }
 
