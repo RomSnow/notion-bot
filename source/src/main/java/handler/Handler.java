@@ -26,10 +26,13 @@ public class Handler {
     public void restoreRooms() {
         var rootFile = new File(rootPath);
         var filePaths = rootFile.listFiles();
-        rooms = new HashMap<>();
 
         if (filePaths != null) {
             for (var file : filePaths) {
+
+                 if (rooms.containsKey(file.getName()))
+                    continue;
+
                 Room room;
                 try {
                     room = Room.restoreRoom(file.getName(), rootPath);

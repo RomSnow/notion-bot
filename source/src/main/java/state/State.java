@@ -1,11 +1,10 @@
-package tg.state;
+package state;
 
 import handler.Category;
 import handler.Handler;
 import handler.InvalidIdException;
 import handler.Room;
 import org.javatuples.Pair;
-import tg.bot.Response;
 import util.Util;
 
 import java.io.File;

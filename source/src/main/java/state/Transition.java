@@ -1,4 +1,4 @@
-package tg.state;
+package state;
 
 import org.javatuples.Pair;
 

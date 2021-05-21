@@ -1,4 +1,4 @@
-package tg.bot;
+package tg;
 
 import java.util.function.Supplier;
 

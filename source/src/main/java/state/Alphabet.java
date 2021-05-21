@@ -1,4 +1,4 @@
-package tg.state;
+package state;
 
 public class Alphabet {
     public static final String START = "/start";

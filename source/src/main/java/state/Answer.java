@@ -1,4 +1,4 @@
-package tg.state;
+package state;
 
 public class Answer {
     public static final String Help = "This is help message!";

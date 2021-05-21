@@ -3,7 +3,7 @@ import com.vk.api.sdk.exceptions.ClientException;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-import tg.bot.TelegramBot;
+import tg.TelegramBot;
 import vk.Vk;
 
 public class App {
