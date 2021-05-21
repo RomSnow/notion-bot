@@ -8,6 +8,7 @@ import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.objects.messages.*;
 import org.apache.commons.io.FileUtils;
+import state.Answer;
 import state.State;
 import state.Response;
 
@@ -23,40 +24,41 @@ public class Vk {
             "5ca5afd12f9cf480d275deb1ded1e4cf3aa3d5daee2a8bad5f776da79f8cc6670bcecdb4c9e068321012c");
     private static final HashMap<Integer, State> users = new HashMap<>();
 
-    public static synchronized void startBot() throws ClientException, ApiException, InterruptedException {
-        var ts = vk.messages().getLongPollServer(actor).execute().getTs();
-
+    public static synchronized void startBot() {
         while (true){
-            Thread.sleep(300);
-            var historyQuery = vk.messages().getLongPollHistory(actor).ts(ts);
-            var messagesHistory = historyQuery.execute().getMessages().getItems();
+            try {
+                var ts = vk.messages().getLongPollServer(actor).execute().getTs();
+                Thread.sleep(300);
+                var historyQuery = vk.messages().getLongPollHistory(actor).ts(ts);
+                var messagesHistory = historyQuery.execute().getMessages().getItems();
 
-            if (!messagesHistory.isEmpty())
-                for (var message: messagesHistory) {
-                    if (!users.containsKey(message.getFromId())) {
-                        var state = new State();
-                        users.put(message.getFromId(), state);
+                if (!messagesHistory.isEmpty())
+                    for (var message : messagesHistory) {
+                        if (!users.containsKey(message.getFromId())) {
+                            var state = new State();
+                            users.put(message.getFromId(), state);
 
-                        var response = state.transition(message.getText(), null, "");
-                        sendMessage(response.getText(), message.getFromId());
-                    }
-                    else {
-                        var state = users.get(message.getFromId());
-
-                        if (!message.getAttachments().isEmpty()) {
-                            var response = handleGetFile(message, state);
-                            sendMessage(response.getText(), message.getFromId());
-                        }
-
-                        var response = state.transition(message.getText(), null, "");
-                        if (response.getFile() == null) {
+                            var response = state.transition(message.getText(), null, "");
                             sendMessage(response.getText(), message.getFromId());
                         } else {
-                            handleSendFile(message, response);
+                            var state = users.get(message.getFromId());
+
+                            if (!message.getAttachments().isEmpty()) {
+                                var response = handleGetFile(message, state);
+                                sendMessage(response.getText(), message.getFromId());
+                            }
+
+                            var response = state.transition(message.getText(), null, "");
+                            if (response.getFile() == null) {
+                                sendMessage(response.getText(), message.getFromId());
+                            } else {
+                                handleSendFile(message, response);
+                            }
                         }
                     }
-                }
-            ts = vk.messages().getLongPollServer(actor).execute().getTs();
+            } catch (InterruptedException | ApiException | ClientException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -82,7 +84,7 @@ public class Vk {
             var doc = vk.docs().save(actor, uploader.getFile()).execute().getDoc();
             sendAttachment(doc.getOwnerId(), doc.getId(), msg.getFromId());
         } catch (IOException | ClientException | ApiException e) {
-            sendMessage("An error occurred while sending file", msg.getFromId());
+            sendMessage(Answer.ErrWhileSendingFile, msg.getFromId());
             e.printStackTrace();
         }
     }

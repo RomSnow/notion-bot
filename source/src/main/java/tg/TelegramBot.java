@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import state.Answer;
 import state.Response;
 import state.State;
 
@@ -79,18 +80,14 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void sendDocByChatId(String chatId, Response response) {
-        var fileToSend = new java.io.File("source/src/main/resources/tmp/" + response.getFile().getName());
         try {
+            var fileToSend = new java.io.File("source/src/main/resources/tmp/" + response.getFile().getName());
             FileUtils.copyFile(response.getFile().getFile(), fileToSend);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        var inputFile = new InputFile(fileToSend);
-        var sendDoc = new SendDocument(chatId, inputFile);
-
-        try {
+            var inputFile = new InputFile(fileToSend);
+            var sendDoc = new SendDocument(chatId, inputFile);
             execute(sendDoc);
-        } catch (TelegramApiException e) {
+        } catch (IOException | TelegramApiException e) {
+            sendMessageByChatId(chatId, Answer.ErrWhileSendingFile);
             e.printStackTrace();
         }
     }
