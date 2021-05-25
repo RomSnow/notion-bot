@@ -45,6 +45,7 @@ public class Category extends FileCreator {
     public MessageFile addFile(File file) throws IOException {
         var msgFile = new MessageFile(file.getName(), getFilePath(), FileType.File);
         files.put(msgFile.getId(), msgFile);
+        usageManager.tagFile(msgFile.getId());
         msgFile.writeFile(file);
         return msgFile;
     }
@@ -52,6 +53,7 @@ public class Category extends FileCreator {
     public MessageFile addFile(File file, String fileName) throws IOException {
         var msgFile = new MessageFile(fileName, getFilePath(), FileType.File);
         files.put(msgFile.getId(), msgFile);
+        usageManager.tagFile(msgFile.getId());
         msgFile.writeFile(file);
         return msgFile;
     }
@@ -59,8 +61,10 @@ public class Category extends FileCreator {
     public MessageFile getFileById(String fileId) throws InvalidIdException {
         if (!files.containsKey(fileId))
             throw new InvalidIdException(fileId);
-        else
+        else {
+            usageManager.tagFile(fileId);
             return files.get(fileId);
+        }
     }
 
     public MessageFile getFileByName(String name) throws InvalidIdException {

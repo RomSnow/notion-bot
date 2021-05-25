@@ -50,28 +50,22 @@ public class Room extends FileCreator {
     public Category addCategory(String name) {
         var category = new Category(name, this.getFilePath());
         categories.put(category.getId(), category);
+        usageManager.tagFile(category.getId());
         return category;
     }
 
     public Category getCategoryById(String id) throws InvalidIdException {
         if (!categories.containsKey(id))
             throw new InvalidIdException(id);
-        else
+        else {
+            usageManager.tagFile(id);
             return categories.get(id);
+        }
     }
 
     public Category getCategoryByName(String name) throws InvalidIdException {
         var id = dbFileNames.getIdByName(name);
         return getCategoryById(id);
-    }
-
-    public void removeCategory(String id) throws InvalidIdException {
-        if (!categories.containsKey(id))
-            throw new InvalidIdException(id);
-        else {
-            var categoryPath = categories.get(id).getFilePath();
-            deleteDirectory(new File(categoryPath), dbFileNames);
-        }
     }
 
     public Collection<Category> getAllCategories(){

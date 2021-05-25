@@ -10,9 +10,11 @@ abstract class FileCreator {
     private final String id;
     private String name;
     private final String filePath;
+    protected final UsageManager usageManager;
     protected final DBFileNames dbFileNames;
 
     public FileCreator(String previousPath, String id) {
+        usageManager = UsageManager.getInstance();
         dbFileNames = new DBFileNames();
         try {
             name = dbFileNames.getNameById(id);
@@ -24,6 +26,7 @@ abstract class FileCreator {
     }
 
     public FileCreator(String name, String previousPath, FileType type) {
+        usageManager = UsageManager.getInstance();
         this.name = name;
 
         String tryId = UUID.randomUUID().toString();
@@ -56,6 +59,10 @@ abstract class FileCreator {
 
     public String getFilePath() {
         return filePath;
+    }
+
+    public void logOut() {
+        usageManager.untagFile(getId());
     }
 
     private void createFile(String filePath, FileType type) throws IOException {

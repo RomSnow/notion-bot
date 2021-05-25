@@ -11,11 +11,13 @@ public class Handler {
     private Map<String, Room> rooms;
     private String rootPath;
     private final DBFileNames dbFileNames;
+    private final UsageManager usageManager;
 
     public Handler(String rootPath) {
         dbFileNames = new DBFileNames();
         rooms = new HashMap<>();
         this.rootPath = rootPath;
+        usageManager = UsageManager.getInstance();
         restoreRooms();
     }
 
@@ -46,7 +48,10 @@ public class Handler {
 
     public Room logInRoomById(String id) throws InvalidIdException {
         if (rooms.containsKey(id))
+        {
+            usageManager.tagFile(id);
             return rooms.get(id);
+        }
         else {
             restoreRooms();
 
@@ -62,7 +67,7 @@ public class Handler {
         return logInRoomById(id);
     }
 
-    public Room registerRoom(String name){
+    public Room registerRoom(String name) {
         var rootFile = new File(rootPath);
         if (!rootFile.exists())
             rootFile.mkdir();
@@ -70,6 +75,7 @@ public class Handler {
 
         var newRoom = new Room(name, rootPath);
         rooms.put(newRoom.getId(), newRoom);
+        usageManager.tagFile(newRoom.getId());
         return newRoom;
     }
 
