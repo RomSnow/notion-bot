@@ -85,23 +85,26 @@ public class Handler {
         deleteDirectory(rootFile, dbFileNames);
     }
 
+    public void removeRoomByName(String name) throws BusyException, InvalidIdException {
+        var id = dbFileNames.getIdByName(name);
+        removeRoomById(id);
+    }
+
+    public void removeRoomById(String id) throws BusyException {
+        Deleter.tryToGetAccess(id, usageManager);
+        var msg = rooms.get(id);
+        var filePath = msg.getFilePath();
+        var file = new File(filePath);
+        Deleter.deleteDirectory(file, dbFileNames);
+        rooms.remove(id);
+    }
+
     public ArrayList<Room> getAllRooms(){
         return new ArrayList<>(rooms.values());
     }
 
-    private static boolean deleteDirectory(File directoryToBeDeleted, DBFileNames db) {
-        File[] allContents = directoryToBeDeleted.listFiles();
-        if (allContents != null) {
-            for (File file : allContents) {
-                deleteDirectory(file, db);
-                try {
-                    db.removeFileRecordById(file.getName());
-                } catch (InvalidIdException e) {
-                    continue;
-                }
-            }
-        }
-        return directoryToBeDeleted.delete();
+    private static void deleteDirectory(File directoryToBeDeleted, DBFileNames db) {
+        Deleter.deleteDirectory(directoryToBeDeleted, db);
     }
 
 }

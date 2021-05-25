@@ -72,6 +72,20 @@ public class Category extends FileCreator {
         return getFileById(id);
     }
 
+    public void removeFileMessageById(String id) throws BusyException {
+        Deleter.tryToGetAccess(id, usageManager);
+        var msg = files.get(id);
+        var filePath = msg.getFilePath();
+        var file = new File(filePath);
+        file.delete();
+        files.remove(id);
+    }
+
+    public void removeFileMessage(String name) throws InvalidIdException, BusyException {
+        var id = dbFileNames.getIdByName(name);
+        removeFileMessageById(id);
+    }
+
     public ArrayList<MessageFile> getAllFiles() {
         return new ArrayList<>(files.values());
     }

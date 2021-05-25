@@ -72,18 +72,17 @@ public class Room extends FileCreator {
         return categories.values();
     }
 
-    private static void deleteDirectory(File directoryToBeDeleted, DBFileNames db) {
-        File[] allContents = directoryToBeDeleted.listFiles();
-        if (allContents != null) {
-            for (File file : allContents) {
-                deleteDirectory(file, db);
-                try {
-                    db.removeFileRecordById(file.getName());
-                } catch (InvalidIdException e) {
-                    continue;
-                }
-            }
-        }
-        directoryToBeDeleted.delete();
+    public void removeCategoryByName(String name) throws BusyException, InvalidIdException {
+        var id = dbFileNames.getIdByName(name);
+        removeCategoryById(id);
+    }
+
+    public void removeCategoryById(String id) throws BusyException {
+        Deleter.tryToGetAccess(id, usageManager);
+        var msg = categories.get(id);
+        var filePath = msg.getFilePath();
+        var file = new File(filePath);
+        Deleter.deleteDirectory(file, dbFileNames);
+        categories.remove(id);
     }
 }
