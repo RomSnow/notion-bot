@@ -17,7 +17,7 @@ abstract class FileCreator {
         try {
             name = dbFileNames.getNameById(id);
         } catch (InvalidIdException e) {
-            name = "";
+            name = "Invalid";
         }
         this.filePath = previousPath + File.separator + id;
         this.id = id;
