@@ -1,5 +1,6 @@
-package tg.bot;
+package tg;
 
+import org.apache.commons.io.FileUtils;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.facilities.filedownloader.TelegramFileDownloader;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
@@ -10,8 +11,11 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import tg.state.State;
+import state.Answer;
+import state.Response;
+import state.State;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import static config.Config.getConfig;
@@ -22,8 +26,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final HashMap<Long, State> chatIdToState;
 
     public TelegramBot() {
-        token = getConfig().get("tg.token");
-        username = getConfig().get("tg.username");
+        token = getConfig().getString("tg.token");
+        username = getConfig().getString("tg.username");
         chatIdToState = new HashMap<>();
     }
 
@@ -76,12 +80,14 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void sendDocByChatId(String chatId, Response response) {
-        var inputFile = new InputFile(response.getFile());
-        var sendDoc = new SendDocument(chatId, inputFile);
-
         try {
+            var fileToSend = new java.io.File("source/src/main/resources/tmp/" + response.getFile().getName());
+            FileUtils.copyFile(response.getFile().getFile(), fileToSend);
+            var inputFile = new InputFile(fileToSend);
+            var sendDoc = new SendDocument(chatId, inputFile);
             execute(sendDoc);
-        } catch (TelegramApiException e) {
+        } catch (IOException | TelegramApiException e) {
+            sendMessageByChatId(chatId, Answer.ErrWhileSendingFile);
             e.printStackTrace();
         }
     }

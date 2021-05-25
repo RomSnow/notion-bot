@@ -1,11 +1,10 @@
-package tg.state;
+package state;
 
 import handler.Category;
 import handler.Handler;
 import handler.InvalidIdException;
 import handler.Room;
 import org.javatuples.Pair;
-import tg.bot.Response;
 import util.Util;
 
 import java.io.File;
@@ -26,6 +25,7 @@ public class State {
     }
 
     public Response transition(String word, java.io.File file, String fileName) {
+        handler.restoreRooms();
         if (Util.BeginWith(word, '/')) {
             if (this.transition.containsKey(new Pair<>(this.condition, word))) {
                 var out = this.transition.get(new Pair<>(condition, word));
@@ -129,7 +129,7 @@ public class State {
         try {
             var msgFile = selectedCategory.getFileByName(word);
             condition = Condition.FILES;
-            return new Response(Answer.GetFileSuccess, msgFile.getFile());
+            return new Response(Answer.GetFileSuccess, msgFile);
         } catch (InvalidIdException e) {
             return new Response(Answer.GetFileNotFound, null);
         }

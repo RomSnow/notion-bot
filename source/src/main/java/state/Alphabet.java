@@ -1,9 +1,8 @@
-package tg.state;
+package state;
 
 public class Alphabet {
     public static final String START = "/start";
     public static final String ROOMS = "/rooms";
-    public static final String CATS = "/categories";
     public static final String HELP = "/help";
     public static final String CANCEL = "/cancel";
     public static final String GOTO = "/goto";

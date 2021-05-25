@@ -1,4 +1,4 @@
-package tg.state;
+package state;
 
 public class Answer {
     public static final String Help = "This is help message!";
@@ -22,6 +22,7 @@ public class Answer {
     public static final String CatCreateFailed = "Failed to create new category.";
     public static final String Files = "Now you in the files section. Here you can type: /all to get list of files in this category, /send to send me your file, /get to get your own file, /cancel to go back.";
     public static final String Cats = "Now you in the category section. Here you can type: /catAll to get list of categories, /catCreate to create new one, /catChoose to select category and manage files, /cancel to go back.";
+    public static final String ErrWhileSendingFile = "An error occurred while sending file";
 
     public static String AnswerToAllFiles(String files) {
         return "There is you have next files: " + files + ".";
