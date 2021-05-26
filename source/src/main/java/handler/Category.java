@@ -79,6 +79,9 @@ public class Category extends FileCreator {
         var file = new File(filePath);
         file.delete();
         files.remove(id);
+        try {
+            dbFileNames.removeFileRecordById(id);
+        } catch (InvalidIdException ignore) {}
     }
 
     public void removeFileMessage(String name) throws InvalidIdException, BusyException {

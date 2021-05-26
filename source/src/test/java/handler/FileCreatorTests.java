@@ -93,6 +93,30 @@ public class FileCreatorTests {
         Assert.assertEquals(oldSet, resSet);
     }
 
+    @Test
+    public void testRemove() throws InvalidIdException, BusyException {
+        var room = handler.registerRoom("toRemove");
+        var category = room.addCategory("catToRemove");
+        category.logOut();
+        room.removeCategoryByName("catToRemove");
+        for (var cat : room.getAllCategories()) {
+            if (cat.getName().equals("catToRemove"))
+                Assert.fail();
+        }
+    }
+
+    @Test
+    public void testAccess() throws InvalidIdException, BusyException {
+        var room = handler.registerRoom("accessRoom");
+        try {
+            handler.removeRoomByName("accessRoom");
+            Assert.fail();
+        } catch (BusyException ignore) {}
+        room.logOut();
+
+        handler.removeRoomByName("accessRoom");
+    }
+
     @AfterClass
     public static void clear() {
         handler.clearAllInRoot();

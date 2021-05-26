@@ -7,7 +7,7 @@ import java.io.File;
 public class Deleter {
     public static void tryToGetAccess(String id, UsageManager usageManager) throws BusyException {
         var tCount = 0;
-        while (!usageManager.isFileTagged(id)) {
+        while (usageManager.isFileTagged(id)) {
             if (tCount > 5)
                 throw new BusyException("File is busy");
 
@@ -31,6 +31,10 @@ public class Deleter {
                 }
             }
         }
+        try {
+            db.removeFileRecordById(directoryToBeDeleted.getName());
+        } catch (InvalidIdException ignored) {}
+
         directoryToBeDeleted.delete();
     }
 }

@@ -12,10 +12,10 @@ public class UsageManager {
     }
 
     public static UsageManager getInstance() {
-        if (instance != null)
-            return instance;
-        else
-            return new UsageManager();
+        if (instance == null)
+            instance = new UsageManager();
+
+        return instance;
     }
 
     public void tagFile(String fileId) {
