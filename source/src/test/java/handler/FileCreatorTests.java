@@ -96,7 +96,7 @@ public class FileCreatorTests {
 
         Assert.assertEquals(oldSet, resSet);
 
-        var tRoom = restoreHandler.logInRoomByName("restoreRoom");
+        var tRoom = restoreHandler.logInRoomByName("restoreRoom", "");
         var tCat = tRoom.addCategory("addedCategory");
         tCat.logOut();
         tRoom.logOut();

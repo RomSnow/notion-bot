@@ -1,6 +1,9 @@
 package handler;
 
+import access_manager.AccessManager;
+import access_manager.InvalidPasswordException;
 import db_storage.DBFileNames;
+import org.telegram.telegrambots.meta.api.methods.groupadministration.DeleteChatStickerSet;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -65,9 +68,17 @@ public class Handler {
         }
     }
 
-    public Room logInRoomByName(String name) throws InvalidIdException {
+    public Room logInRoomByName(String name, String password) throws InvalidIdException, InvalidPasswordException {
         var id = dbFileNames.getIdByName(name);
-        return logInRoomById(id);
+
+        var room = logInRoomById(id);
+
+        if (AccessManager.checkPassword(password, room))
+            return room;
+        else {
+            room.logOut();
+            throw new InvalidPasswordException(password);
+        }
     }
 
     public Room registerRoom(String name) {

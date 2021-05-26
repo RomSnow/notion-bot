@@ -1,5 +1,7 @@
 package handler;
 
+import access_manager.AccessManager;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -80,6 +82,10 @@ public class Room extends FileCreator {
         var file = new File(filePath);
         Deleter.deleteDirectory(file, dbFileNames);
         categories.remove(id);
+    }
+
+    public void setPassword(String password) throws InvalidIdException {
+        AccessManager.setPassword(password, this);
     }
 
     public void update() {

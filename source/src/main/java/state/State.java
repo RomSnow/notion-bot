@@ -87,7 +87,7 @@ public class State {
 
     private Response handleRoomChoose(String word) {
         try {
-            selectedRoom = handler.logInRoomByName(word);
+            selectedRoom = handler.logInRoomByName(word, "");
             condition = Condition.CATS;
             return new Response(Answer.Cats, null);
         } catch (InvalidIdException e) {
