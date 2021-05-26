@@ -77,7 +77,11 @@ public class FileCreatorTests {
     }
 
     @Test
-    public void testRestore() {
+    public void testRestore() throws InvalidIdException {
+        var room = handler.registerRoom("restoreRoom");
+        var cat = room.addCategory("restoreCat");
+        cat.logOut();
+
         var restoreHandler = new Handler("src/test/Rooms");
         var oldRooms = handler.getAllRooms();
         var restoredRooms = restoreHandler.getAllRooms();
@@ -91,6 +95,18 @@ public class FileCreatorTests {
             resSet.add(res.getId());
 
         Assert.assertEquals(oldSet, resSet);
+
+        var tRoom = restoreHandler.logInRoomByName("restoreRoom");
+        var tCat = tRoom.addCategory("addedCategory");
+        tCat.logOut();
+        tRoom.logOut();
+
+        handler.restoreRooms();
+        for (var c : room.getAllCategories()) {
+            if (c.getName().equals("addedCategory"))
+                return;
+        }
+        Assert.fail();
     }
 
     @Test

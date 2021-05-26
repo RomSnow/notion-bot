@@ -92,4 +92,27 @@ public class Category extends FileCreator {
     public ArrayList<MessageFile> getAllFiles() {
         return new ArrayList<>(files.values());
     }
+
+    public void update() {
+        var filePaths = new File(getFilePath()).listFiles();
+
+        if (filePaths != null) {
+            for (var file : filePaths) {
+                var fileName = file.getName();
+
+                if (files.containsKey(fileName))
+                    continue;
+
+                MessageFile restMsg;
+                try {
+                    restMsg = MessageFile.restoreMessageFile(file.getName(), file.getParent());
+                } catch (InvalidIdException e) {
+                    continue;
+                }
+
+                files.put(restMsg.getId(), restMsg);
+
+            }
+        }
+    }
 }

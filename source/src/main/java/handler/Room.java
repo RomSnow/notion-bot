@@ -1,7 +1,5 @@
 package handler;
 
-import db_storage.DBFileNames;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,8 +21,6 @@ public class Room extends FileCreator {
 
         if (filePaths != null) {
             for (var file : filePaths) {
-                var fileName = file.getName();
-                var fileParent = file.getParent();
                 listCategories.add(
                         Category.restoreCategory(file.getName(), file.getParent())
                 );
@@ -84,5 +80,31 @@ public class Room extends FileCreator {
         var file = new File(filePath);
         Deleter.deleteDirectory(file, dbFileNames);
         categories.remove(id);
+    }
+
+    public void update() {
+        var filePaths = new File(getFilePath()).listFiles();
+
+        if (filePaths != null) {
+            for (var file : filePaths) {
+                var fileName = file.getName();
+
+                if (categories.containsKey(fileName)) {
+                    var category = categories.get(fileName);
+                    category.update();
+                    continue;
+                }
+
+                Category restCat;
+                try {
+                    restCat = Category.restoreCategory(file.getName(), file.getParent());
+                } catch (InvalidIdException e) {
+                    continue;
+                }
+
+                categories.put(restCat.getId(), restCat);
+
+            }
+        }
     }
 }

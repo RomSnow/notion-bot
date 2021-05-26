@@ -31,13 +31,16 @@ public class Handler {
 
         if (filePaths != null) {
             for (var file : filePaths) {
-
-                 if (rooms.containsKey(file.getName()))
-                    continue;
+                var fileName = file.getName();
+                 if (rooms.containsKey(fileName)) {
+                     var room = rooms.get(fileName);
+                     room.update();
+                     continue;
+                 }
 
                 Room room;
                 try {
-                    room = Room.restoreRoom(file.getName(), rootPath);
+                    room = Room.restoreRoom(fileName, rootPath);
                 } catch (InvalidIdException e) {
                     continue;
                 }
