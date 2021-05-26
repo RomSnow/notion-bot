@@ -122,9 +122,11 @@ public class Vk {
         var keyboard = new Keyboard();
         List<KeyboardButton> rowButtons = new ArrayList<>();
         List<List<KeyboardButton>> buttons = new ArrayList<>();
+        var count = 0;
         for (var wordToSend: setKeyboard(text)){
             rowButtons.add(new KeyboardButton().setAction(new KeyboardButtonAction().setLabel(wordToSend).setType(KeyboardButtonActionType.TEXT)));
-            if (rowButtons.size() == 3){
+            count++;
+            if (count == 3){
                 buttons.add(rowButtons);
                 rowButtons = new ArrayList<>();
             }
