@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
-abstract class FileCreator {
+public abstract class FileCreator {
     private final String id;
     private String name;
     private final String filePath;
