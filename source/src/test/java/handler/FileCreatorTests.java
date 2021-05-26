@@ -1,5 +1,6 @@
 package handler;
 
+import access_manager.InvalidPasswordException;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -96,7 +97,12 @@ public class FileCreatorTests {
 
         Assert.assertEquals(oldSet, resSet);
 
-        var tRoom = restoreHandler.logInRoomByName("restoreRoom", "");
+        Room tRoom = null;
+        try {
+            tRoom = restoreHandler.logInRoomByName("restoreRoom", "");
+        } catch (InvalidPasswordException e) {
+            e.printStackTrace();
+        }
         var tCat = tRoom.addCategory("addedCategory");
         tCat.logOut();
         tRoom.logOut();
@@ -131,6 +137,21 @@ public class FileCreatorTests {
         room.logOut();
 
         handler.removeRoomByName("accessRoom");
+    }
+
+    @Test
+    public void testPassword() throws InvalidIdException, InvalidPasswordException {
+        var room = handler.registerRoom("AccessRoom");
+        room.setPassword("pwd");
+        room.logOut();
+
+        var testRoom = handler.logInRoomByName("AccessRoom", "pwd");
+        Assert.assertSame(room, testRoom);
+
+        try {
+            handler.logInRoomByName("AccessRoom", "invalid");
+            Assert.fail();
+        } catch (InvalidPasswordException ignored) {}
     }
 
     @AfterClass
