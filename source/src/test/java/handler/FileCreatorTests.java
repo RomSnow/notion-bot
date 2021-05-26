@@ -152,6 +152,11 @@ public class FileCreatorTests {
             handler.logInRoomByName("AccessRoom", "invalid");
             Assert.fail();
         } catch (InvalidPasswordException ignored) {}
+
+        var emptyRoom = handler.registerRoom("EmptyRoom");
+        emptyRoom.logOut();
+
+        handler.logInRoomByName("EmptyRoom", "");
     }
 
     @AfterClass
