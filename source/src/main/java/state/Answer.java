@@ -3,7 +3,7 @@ package state;
 public class Answer {
     public static final String Help = "This is help message!";
     public static final String Intro = "This is introduction message! Available commands: /rooms, /help.";
-    public static final String Rooms = "Now you in the room section. Here you can type: /roomAll to get list of rooms, /roomCreate to create new one, /roomChoose to select room and go to category section, /cancel to go back.";
+    public static final String Rooms = "Now you in the room section. Here you can type: /roomAll to get list of rooms, /roomCreate to create new one (with empty password, btw you can set password later), /roomChoose to select room and go to category section, /cancel to go back.";
     public static final String RoomsCreate = "Type name for new room or /cancel to go back.";
     public static final String CatsCreate = "Type name for new category or /cancel to go back.";
     public static final String Idk = "I don't understand your message!";
@@ -16,13 +16,18 @@ public class Answer {
     public static final String GetFileNotFound = "I can't find this file.";
     public static final String RoomCreated = "Successfully create new room.";
     public static final String CatCreated = "Successfully create new category.";
-    public static final String RoomNotFound = "There is no room with this name.";
+    public static final String RoomsPass = "Type your new password for this room or /cancel to go back";
+    public static final String RoomNotFound = "There is no room with this name or password is incorrect.";
     public static final String CatNotFound = "There is no category with this name.";
     public static final String RoomCreateFailed = "Failed to create new room.";
     public static final String CatCreateFailed = "Failed to create new category.";
-    public static final String Files = "Now you in the files section. Here you can type: /all to get list of files in this category, /send to send me your file, /get to get your own file, /cancel to go back.";
-    public static final String Cats = "Now you in the category section. Here you can type: /catAll to get list of categories, /catCreate to create new one, /catChoose to select category and manage files, /cancel to go back.";
-    public static final String ErrWhileSendingFile = "An error occurred while sending file";
+    public static final String Files = "Now you in the files section. Here you can type: /all to get list of files in this category, /send to send me your file, /get to get your own file, /catDel for delete current category, /delete for delete file, /cancel to go back.";
+    public static final String Cats = "Now you in the category section. Here you can type: /catAll to get list of categories, /catCreate to create new one, /catChoose to select category and manage files, /setPass for set new password for this room, /roomDel for delete current room, /cancel to go back.";
+    public static final String ErrWhileSendingFile = "An error occurred while sending file.";
+    public static final String ErrFileDel = "File is busy or file can't find.";
+    public static final String SuccessFileDel = "File successfully deleted.";
+    public static final String SuccessPassSet = "Password has been set.";
+    public static final String Error = "ERROR";
 
     public static String AnswerToAllFiles(String files) {
         return "There is you have next files: " + files + ".";
@@ -32,12 +37,16 @@ public class Answer {
         return "There is you have next files: " + files + ". Choose to get any file. Type /cancel to go back.";
     }
 
+    public static String AnswerToDelFile(String files) {
+        return "There is you have next files: " + files + ". Choose to delete any file. Type /cancel to go back.";
+    }
+
     public static String AnswerToAllRooms(String rooms) {
         return "There is you have next rooms: " + rooms + ".";
     }
 
     public static String AnswerToRoomsChoose(String rooms) {
-        return "There is you have next rooms: " + rooms + ". Choose one to select room. Type /cancel to go back.";
+        return "There is you have next rooms: " + rooms + ". Type name and password after space, if password empty type only room name. Type /cancel to go back.";
     }
 
     public static String AnswerToAllCats(String cats) {

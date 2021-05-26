@@ -65,8 +65,11 @@ public class TelegramBot extends TelegramLongPollingBot {
             return;
         if (response.getFile() == null)
             sendMessageByChatId(chatId.toString(), response.getText());
-        else
+        else {
             sendDocByChatId(chatId.toString(), response);
+            response.getFile().logOut();
+        }
+
     }
 
     private void sendMessageByChatId(String chatId, String message) {

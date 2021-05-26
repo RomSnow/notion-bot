@@ -1,9 +1,8 @@
 package state;
 
-import handler.Category;
-import handler.Handler;
-import handler.InvalidIdException;
-import handler.Room;
+import access_manager.AccessManager;
+import access_manager.InvalidPasswordException;
+import handler.*;
 import org.javatuples.Pair;
 import util.Util;
 
@@ -44,6 +43,16 @@ public class State {
                 case Alphabet.FILES_SEND:
                     condition = Condition.FILES_SEND;
                     return new Response(Answer.SendFile, null);
+                case Alphabet.CANCEL:
+                    condition = Condition.CATS;
+                    selectedCategory.logOut();
+                    selectedCategory = null;
+                    return new Response(Answer.Cats, null);
+                case Alphabet.CAT_DELETE:
+                    return handleCatDelete();
+                case Alphabet.FILES_DEL:
+                    condition = Condition.FILES_DEL;
+                    return new Response(Answer.AnswerToDelFile(allFiles), null);
             }
         } else if (condition.equals(Condition.FILES_GET)) {
             return handleFileGet(word);
@@ -76,21 +85,38 @@ public class State {
                 case Alphabet.CATS_CREATE:
                     condition = Condition.CATS_CREATE;
                     return new Response(Answer.CatsCreate, null);
+                case Alphabet.CANCEL:
+                    condition = Condition.ROOMS;
+                    selectedRoom.logOut();
+                    selectedRoom = null;
+                    return new Response(Answer.Rooms, null);
+                case Alphabet.ROOMS_DELETE:
+                    return handleRoomDelete();
             }
         } else if (condition.equals(Condition.CATS_CHOOSE)) {
             return handleCategoryChoose(word);
         } else if (condition.equals(Condition.CATS_CREATE)) {
             return handleCategoryCreate(word);
+        } else if (condition.equals(Condition.ROOMS_PASS)) {
+            return handleSetPassword(word);
+        } else if (condition.equals(Condition.FILES_DEL)) {
+            return handleFileDel(word);
         }
         return new Response(Answer.Idk, null);
     }
 
     private Response handleRoomChoose(String word) {
+        var req = word.split(" ");
         try {
+            if (req.length > 1) {
+                selectedRoom = handler.logInRoomByName(req[0], req[1]);
+                condition = Condition.CATS;
+                return new Response(Answer.Cats, null);
+            }
             selectedRoom = handler.logInRoomByName(word, "");
             condition = Condition.CATS;
             return new Response(Answer.Cats, null);
-        } catch (InvalidIdException e) {
+        } catch (InvalidIdException | InvalidPasswordException e) {
             return new Response(Answer.RoomNotFound, null);
         }
     }
@@ -102,6 +128,27 @@ public class State {
             return new Response(Answer.RoomCreated, null);
         } catch (Exception e) {
             return new Response(Answer.RoomCreateFailed, null);
+        }
+    }
+
+    private Response handleSetPassword(String word) {
+        try {
+            AccessManager.setPassword(word, selectedRoom);
+            condition = Condition.CATS;
+            return new Response(Answer.SuccessPassSet, null);
+        } catch (InvalidIdException ignore) {
+            return new Response(Answer.Error, null);
+        }
+    }
+
+    private Response handleRoomDelete() {
+        condition = Condition.ROOMS;
+        selectedRoom.logOut();
+        try {
+            handler.removeRoomByName(selectedRoom.getName());
+            return new Response(Answer.Rooms, null);
+        } catch (BusyException | InvalidIdException ignore) {
+            return new Response(Answer.Error, null);
         }
     }
 
@@ -147,5 +194,26 @@ public class State {
             }
         }
         return new Response(Answer.SendFileNot, null);
+    }
+
+    private Response handleCatDelete() {
+        condition = Condition.CATS;
+        selectedCategory.logOut();
+        try {
+            selectedRoom.removeCategoryByName(selectedCategory.getName());
+            return new Response(Answer.Cats, null);
+        } catch (BusyException | InvalidIdException ignore) {
+            return new Response(Answer.Error, null);
+        }
+    }
+
+    private Response handleFileDel(String word) {
+        try {
+            selectedCategory.removeFileMessage(word);
+            condition = Condition.FILES;
+            return new Response(Answer.SuccessFileDel, null);
+        } catch (InvalidIdException | BusyException e) {
+            return new Response(Answer.ErrFileDel, null);
+        }
     }
 }

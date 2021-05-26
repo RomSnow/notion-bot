@@ -55,6 +55,7 @@ public class Vk {
                                 sendMessage(response.getText(), message.getFromId());
                             } else {
                                 handleSendFile(message, response);
+                                response.getFile().logOut();
                             }
                         }
                     }
