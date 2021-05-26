@@ -7,7 +7,7 @@ public class DBFileNames {
 
     public void addFileRecord(String fileId, String fileName, String adminName) {
         var sql = String.format(
-                "INSERT INTO %s (name, file_id, admin, pwd) VALUES ('%s', '%s', '%s', '')",
+                "INSERT INTO %s (name, file_id, admin, password) VALUES ('%s', '%s', '%s', '')",
                 TABLE_NAME, fileName, fileId, adminName);
         try {
             DBConnector.updateBySQL(sql);
