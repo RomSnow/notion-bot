@@ -98,6 +98,7 @@ public class Vk {
             vk.messages().send(actor)
                     .message(text)
                     .userId(userId)
+                    .keyboard(setVkKeyboard(text))
                     .randomId(random.nextInt(10000)).execute();
         } catch (ApiException | ClientException e) {
             e.printStackTrace();
@@ -115,5 +116,37 @@ public class Vk {
         } catch (ApiException | ClientException e) {
             e.printStackTrace();
         }
+    }
+
+    private static Keyboard setVkKeyboard(String text){
+        var keyboard = new Keyboard();
+        List<KeyboardButton> rowButtons = new ArrayList<>();
+        List<List<KeyboardButton>> buttons = new ArrayList<>();
+        for (var wordToSend: setKeyboard(text)){
+            rowButtons.add(new KeyboardButton().setAction(new KeyboardButtonAction().setLabel(wordToSend).setType(KeyboardButtonActionType.TEXT)));
+            if (rowButtons.size() == 3){
+                buttons.add(rowButtons);
+                rowButtons = new ArrayList<>();
+            }
+        }
+        buttons.add(rowButtons);
+        if (buttons.get(0).size() > 0)
+            keyboard.setButtons(buttons);
+        return keyboard;
+    }
+
+    public static List<String> setKeyboard(String text){
+        List<String> wordsForButtons = new ArrayList<>();
+        for (var word: text.split(" ")){
+            if (word.charAt(0) == '/') {
+                String wordToSend = "";
+                if (word.charAt(word.length() - 1) == '.' || word.charAt(word.length() - 1) == ',')
+                    wordToSend = word.substring(0, word.length() - 1);
+                else
+                    wordToSend = word;
+                wordsForButtons.add(wordToSend);
+            }
+        }
+        return wordsForButtons;
     }
 }
