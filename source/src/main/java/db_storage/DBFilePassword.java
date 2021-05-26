@@ -12,7 +12,7 @@ public class DBFilePassword {
     }
 
     public static String getPassword(String id) throws InvalidIdException {
-        var sql = "GET password FROM %s WHERE file_id = '%s'"
+        var sql = "SELECT password FROM %s WHERE file_id = '%s'"
                 .formatted(TABLE_NAME, id);
         return DBConnector.getBySQL(sql, "password");
     }
