@@ -1,14 +1,14 @@
 package handler;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UsageManager {
     private static UsageManager instance;
-    private final Set<String> usingFiles;
+    private final Map<String, Integer> usingFiles;
 
     private UsageManager() {
-        usingFiles = new HashSet<>();
+        usingFiles = new HashMap<>();
     }
 
     public static UsageManager getInstance() {
@@ -19,14 +19,20 @@ public class UsageManager {
     }
 
     public void tagFile(String fileId) {
-        usingFiles.add(fileId);
+        if (usingFiles.containsKey(fileId))
+            usingFiles.put(fileId, usingFiles.get(fileId) + 1);
+        else
+            usingFiles.put(fileId, 1);
     }
 
     public void untagFile(String fileId) {
-        usingFiles.remove(fileId);
+        usingFiles.put(fileId, usingFiles.get(fileId) - 1);
     }
 
     public boolean isFileTagged(String fileId) {
-        return usingFiles.contains(fileId);
+        if (usingFiles.containsKey(fileId))
+            return usingFiles.get(fileId) > 0;
+
+        return false;
     }
 }
