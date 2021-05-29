@@ -30,7 +30,7 @@ public class Vk {
         while (true){
             try {
                 var ts = vk.messages().getLongPollServer(actor).execute().getTs();
-                Thread.sleep(300);
+                Thread.sleep(1000);
                 var historyQuery = vk.messages().getLongPollHistory(actor).ts(ts);
                 var messagesHistory = historyQuery.execute().getMessages().getItems();
 
