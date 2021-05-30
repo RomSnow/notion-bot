@@ -124,9 +124,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         keyboard.setResizeKeyboard(true);
         keyboard.setOneTimeKeyboard(true);
         keyboard.setSelective(true);
-        for (var wordToSend: Vk.setKeyboard(text)){
+        for (var wordToSend: Vk.setKeyboard(text)) {
             row.add(new KeyboardButton(wordToSend));
-            if (row.size() == 3){
+            if (row.size() == 3) {
                 buttons.add(row);
                 row = new KeyboardRow();
             }
